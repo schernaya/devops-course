@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+#/ command: chorna:sofiia: "prints all variables in colors"
+#/ usage: rerun chorna:sofiia [options]
+#/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
+#/ option-variables:
+
+. "$RERUN_MODULE_DIR/lib/functions.sh" "sofiia" || {
+  echo >&2 "Failed loading function library." ; exit 1 ;
+}
+
+set -o errexit -o nounset -o pipefail
+
+rerun_options_parse "$@"
+
+# Command implementation
+# ----------------------
+
+# colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+VARIABLES="$(env)"
+
+echo "Listing env variables"
+echo
+
+for var in $VARIABLES
+do
+  # read entry's key and value
+    name="${var%=*}"
+    value="${var#*=}"
+
+    echo -e "${RED}${name} = ${GREEN}${value}"
+    echo
+done
+
+echo -e "${NC}Done"
+
+# Exit with last command exit status.
+exit $?
+
